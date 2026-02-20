@@ -1,8 +1,27 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { verifyJwt } from "@/lib/auth/stellar-auth";
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
+
+  // -----------------------------------------------------------------------
+  // 1. Check Stellar JWT cookie (auth-token)
+  // -----------------------------------------------------------------------
+
+  const jwtToken = request.cookies.get("auth-token")?.value;
+
+  if (jwtToken) {
+    const payload = verifyJwt(jwtToken);
+    if (payload && typeof payload.sub === "string") {
+      // User is authenticated via Stellar wallet — allow through
+      return supabaseResponse;
+    }
+  }
+
+  // -----------------------------------------------------------------------
+  // 2. Fall back to Supabase session auth
+  // -----------------------------------------------------------------------
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

@@ -3,6 +3,7 @@ import { z } from "zod";
 const serverSchema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1, "Supabase service role key is required"),
   DATABASE_URL: z.string().min(1, "Database URL is required"),
+  JWT_SECRET: z.string().min(32, "JWT secret must be at least 32 characters"),
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
 });
 
@@ -22,6 +23,7 @@ const getEnvVars = () => {
     return {
       SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
       DATABASE_URL: process.env.DATABASE_URL,
+      JWT_SECRET: process.env.JWT_SECRET,
       NODE_ENV: process.env.NODE_ENV,
       NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
       NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,

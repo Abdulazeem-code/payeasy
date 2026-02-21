@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import type { ListingSearchParams, ListingSearchResult } from "@/lib/db/types";
+import type { ListingRow, ListingAmenityRow } from "@/lib/types/database";
 
 export async function GET(request: NextRequest) {
   try {
@@ -100,7 +101,7 @@ export async function GET(request: NextRequest) {
 
     const offset = (params.page! - 1) * params.limit!;
     query = query.range(offset, offset + params.limit! - 1);
-    const { data: listings, error, count } = await query;
+    const { data: listings, error, count } = await query as any;
 
     if (error) {
       console.error("Database error:", error);
@@ -185,12 +186,15 @@ export async function GET(request: NextRequest) {
     let finalCount = count || 0;
 
     if (params.amenities && params.amenities.length > 0 && listings && listings.length > 0) {
-      const listingIds = listings.map((l) => l.id);
+      const listingIds = listings.map((l: any) => l.id);
       const { data: amenityData, error: amenityError } = await supabase
         .from("listing_amenities")
         .select("listing_id, amenity")
         .in("listing_id", listingIds)
-        .in("amenity", params.amenities);
+        .in("amenity", params.amenities) as {
+          data: Array<{ listing_id: string; amenity: string }> | null;
+          error: any;
+        };
 
       if (amenityError) {
         console.error("Amenity filter error:", amenityError);
@@ -203,7 +207,7 @@ export async function GET(request: NextRequest) {
           listingAmenities.get(item.listing_id)!.add(item.amenity);
         });
 
-        filteredListings = filteredListings.filter((listing) => {
+        filteredListings = filteredListings.filter((listing: any) => {
           const listingAmenitySet = listingAmenities.get(listing.id) || new Set();
           return params.amenities!.every((amenity) => listingAmenitySet.has(amenity));
         });

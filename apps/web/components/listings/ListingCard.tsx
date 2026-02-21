@@ -3,17 +3,18 @@
 import Image from 'next/image'
 import { MapPin, Bed, Bath } from 'lucide-react'
 import FavoriteButton from '../FavoriteButton'
-import type { Listing } from '../../lib/db/types'
+import type { Listing, ListingWithLandlord } from '../../lib/db/types'
 import Link from 'next/link'
 
 interface ListingCardProps {
-    listing: Listing
+    listing: ListingWithLandlord | (Listing & { images?: string[]; landlord?: { username: string | null } })
 }
 
 export default function ListingCard({ listing }: ListingCardProps) {
     // Use the first image from the array or fallback
-    const imageUrl = listing.images && listing.images.length > 0 
-        ? listing.images[0] 
+    const images = (listing as any).images || [];
+    const imageUrl = images.length > 0 
+        ? images[0] 
         : '/images/airbnb1.jpg' // Ensure this fallback exists in public/images
 
     return (

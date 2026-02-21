@@ -1,7 +1,7 @@
 import { ListingSearchResult } from '../../lib/db/types'
 import ListingCard from '../../components/listings/ListingCard'
 import Link from 'next/link'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react'
 
 // Helper to fetch data
 async function getListings(page: number): Promise<ListingSearchResult> {
@@ -29,7 +29,16 @@ export default async function ListingsPage({
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">Browse Listings</h1>
+            <div className="flex items-center gap-4 mb-8">
+                <Link 
+                    href="/browse"
+                    className="p-2 rounded-full bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors shadow-sm"
+                    aria-label="Back to Browse"
+                >
+                    <ArrowLeft size={20} />
+                </Link>
+                <h1 className="text-3xl font-bold text-gray-900">All Listings</h1>
+            </div>
             
             {data.listings.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -45,21 +54,21 @@ export default async function ListingsPage({
 
             {/* Pagination */}
             {data.totalPages > 1 && (
-                <div className="flex justify-center items-center gap-4">
+                <div className="flex justify-center items-center gap-4 py-8">
                     <Link
                         href={`/listings?page=${page - 1}`}
-                        className={`px-4 py-2 rounded-lg border border-gray-300 flex items-center gap-2 bg-white hover:bg-gray-50 transition-colors ${page <= 1 ? 'pointer-events-none opacity-50' : ''}`}
+                        className={`px-6 py-3 rounded-lg border border-gray-300 flex items-center gap-2 bg-white text-gray-900 font-semibold shadow-sm hover:bg-gray-50 hover:border-gray-400 transition-all active:scale-95 ${page <= 1 ? 'pointer-events-none opacity-40 bg-gray-100' : ''}`}
                         aria-disabled={page <= 1}
                     >
                         <ChevronLeft size={20} />
                         Previous
                     </Link>
-                    <span className="text-gray-600 font-medium">
-                        Page {page} of {data.totalPages}
+                    <span className="text-gray-700 font-semibold text-lg px-4">
+                        Page {page} <span className="text-gray-400 font-normal">of</span> {data.totalPages}
                     </span>
                     <Link
                         href={`/listings?page=${page + 1}`}
-                        className={`px-4 py-2 rounded-lg border border-gray-300 flex items-center gap-2 bg-white hover:bg-gray-50 transition-colors ${page >= data.totalPages ? 'pointer-events-none opacity-50' : ''}`}
+                        className={`px-6 py-3 rounded-lg border border-gray-300 flex items-center gap-2 bg-white text-gray-900 font-semibold shadow-sm hover:bg-gray-50 hover:border-gray-400 transition-all active:scale-95 ${page >= data.totalPages ? 'pointer-events-none opacity-40 bg-gray-100' : ''}`}
                         aria-disabled={page >= data.totalPages}
                     >
                         Next

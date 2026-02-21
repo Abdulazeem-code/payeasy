@@ -118,7 +118,7 @@ export async function GET(request: NextRequest) {
         status: "active",
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        images: [`/images/airbnb${(i % 4) + 1}.jpg`], // Rotate through available images
+        images: [`/images/airbnb${(i % 4) + 1}.${(i % 4) + 1 === 4 ? 'webp' : 'jpg'}`], // Rotate through available images
         landlord: {
           username: "Demo User",
           avatar_url: null,
@@ -152,7 +152,7 @@ export async function GET(request: NextRequest) {
         status: "active",
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        images: [`/images/airbnb${(i % 4) + 1}.jpg`], // Rotate through available images
+        images: [`/images/airbnb${(i % 4) + 1}.${(i % 4) + 1 === 4 ? 'webp' : 'jpg'}`], // Rotate through available images
         landlord: {
           username: "Demo User",
           avatar_url: null,

@@ -4,8 +4,10 @@ const config = {
     setupFilesAfterEnv: ['./jest.setup.js'],
     moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/$1',
+        '\\.(css|less|scss|sass)$': '<rootDir>/__mocks__/styleMock.js',
     },
-    testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
+    testMatch: ['**/?(*.)+(spec|test).[jt]s?(x)'],
+    testPathIgnorePatterns: ['/node_modules/', '/fixtures/', '/performance/'],
     transform: {
         '^.+\\.(ts|tsx|js|mjs|jsx)$': ['ts-jest', { tsconfig: { jsx: 'react-jsx', module: 'commonjs', target: 'es2022', allowJs: true } }],
     },

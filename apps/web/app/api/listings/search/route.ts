@@ -16,24 +16,11 @@ export async function GET(request: NextRequest) {
       bathrooms: searchParams.get("bathrooms") ? Number(searchParams.get("bathrooms")) : undefined,
       amenities: searchParams.get("amenities")
         ? searchParams
-            .get("amenities")!
-            .split(",")
-            .map((a) => a.trim())
+          .get("amenities")!
+          .split(",")
+          .map((a) => a.trim())
         : undefined,
-      maxPrice: searchParams.get('maxPrice')
-        ? Number(searchParams.get('maxPrice'))
-        : undefined,
-      location: searchParams.get('location') || undefined,
-      radius: searchParams.get('radius') || undefined,
-      bedrooms: searchParams.get('bedrooms')
-        ? Number(searchParams.get('bedrooms'))
-        : undefined,
-      bathrooms: searchParams.get('bathrooms')
-        ? Number(searchParams.get('bathrooms'))
-        : undefined,
-      amenities: searchParams.get('amenities')
-        ? searchParams.get('amenities')!.split(',').map((a) => a.trim())
-        : undefined,
+
       search: searchParams.get('search') || undefined,
       bbox: searchParams.get('bbox') || undefined,
       sortBy: (searchParams.get('sortBy') as 'price' | 'created_at' | 'bedrooms' | 'bathrooms') || 'created_at',

@@ -120,20 +120,20 @@ function extractGasFromSimulation(simulation: {
 
   const transactionData = simulation.transactionData as
     | {
-        resources?: () => {
-          instructions?: () => unknown;
-          readBytes?: () => unknown;
-          writeBytes?: () => unknown;
-        };
-      }
+      resources?: () => {
+        instructions?: () => unknown;
+        readBytes?: () => unknown;
+        writeBytes?: () => unknown;
+      };
+    }
     | undefined;
 
   return {
     stroops: minResourceFee,
     source: "simulateTransaction",
-    cpuInstructions: Number(transactionData?.resources()?.instructions() ?? 0),
-    readBytes: Number(transactionData?.resources()?.readBytes() ?? 0),
-    writeBytes: Number(transactionData?.resources()?.writeBytes() ?? 0),
+    cpuInstructions: Number(transactionData?.resources?.()?.instructions?.() ?? 0),
+    readBytes: Number(transactionData?.resources?.()?.readBytes?.() ?? 0),
+    writeBytes: Number(transactionData?.resources?.()?.writeBytes?.() ?? 0),
   };
 }
 
@@ -205,7 +205,7 @@ export async function buildContractTransaction(
     .build();
 
   const simulation = await server.simulateTransaction(initialTransaction);
-  const simulationGasEstimate = extractGasFromSimulation(simulation);
+  const simulationGasEstimate = extractGasFromSimulation(simulation as any);
   const rpcGasEstimate = await estimateGasViaRpcMethod(rpcUrl, initialTransaction.toXDR());
 
   const rpcWithAssembler = SorobanRpc as unknown as {
@@ -225,8 +225,8 @@ export async function buildContractTransaction(
       : typeof prepareTransaction === "function"
         ? await prepareTransaction(initialTransaction)
         : (() => {
-            throw new Error("Soroban transaction assembly is unavailable for this stellar-sdk version.");
-          })();
+          throw new Error("Soroban transaction assembly is unavailable for this stellar-sdk version.");
+        })();
 
   return {
     unsignedXdr: preparedTransaction.toXDR(),
@@ -252,12 +252,13 @@ export async function signContractTransaction(
     }
 
     if (signed && typeof signed === "object") {
-      if ("error" in signed && typeof signed.error === "string" && signed.error.length > 0) {
-        throw new Error(signed.error);
+      const signedObj = signed as any;
+      if ("error" in signedObj && typeof signedObj.error === "string" && signedObj.error.length > 0) {
+        throw new Error(signedObj.error);
       }
 
-      if ("signedTxXdr" in signed && typeof signed.signedTxXdr === "string") {
-        return signed.signedTxXdr;
+      if ("signedTxXdr" in signedObj && typeof signedObj.signedTxXdr === "string") {
+        return signedObj.signedTxXdr;
       }
     }
 
@@ -481,7 +482,7 @@ export async function getNetworkTransactionStatus(
     const tx = await horizonServer.transactions().transaction(transactionHash).call();
     return {
       status: tx.successful ? "success" : "failed",
-      ledger: tx.ledger,
+      ledger: tx.ledger as any as number,
     };
   } catch {
     return {
